@@ -17,12 +17,14 @@ class CalorieTracker {
   addMeal(meal) {
     this._meals.push(meal);
     this._totalCalories += meal.calories;
+    this._displayNewMeal(meal);
     this._render();
   }
 
   addWorkout(workout) {
     this._workouts.push(workout);
     this._totalCalories -= workout.calories;
+    this._displayNewWorkout(workout);
     this._render();
   }
 
@@ -90,6 +92,46 @@ class CalorieTracker {
     progressEl.style.width = `${width}%`;
   }
 
+  _displayNewMeal(meal) {
+    const mealsElem = document.getElementById('meal-items');
+    const mealElem = document.createElement('div');
+    mealElem.classList.add('card', 'my-2');
+    mealElem.setAttribute('data-id', meal.id);
+    mealElem.innerHTML = `
+    <div class="card-body">
+      <div class="d-flex align-items-center justify-content-between">
+          <h4 class="mx-1">${meal.name}</h4>
+          <div class="fs-1 bg-primary text-white text-center rounded-2 px-2 px-sm-5">
+                  ${meal.calories}
+          </div>
+          <button class="delete btn btn-danger btn-sm mx-2">
+                  <i class="fa-solid fa-xmark"></i>
+          </button>
+      </div>
+    </div>`;
+    mealsElem.appendChild(mealElem);
+  }
+
+  _displayNewWorkout(workout) {
+    const workoutsElem = document.getElementById('workout-items');
+    const workoutElem = document.createElement('div');
+    workoutElem.classList.add('card', 'my-2');
+    workoutElem.setAttribute('data-id', workout.id);
+    workoutElem.innerHTML = `
+    <div class="card-body">
+      <div class="d-flex align-items-center justify-content-between">
+          <h4 class="mx-1">${workout.name}</h4>
+          <div class="fs-1 bg-secondary text-white text-center rounded-2 px-2 px-sm-5">
+                  ${workout.calories}
+          </div>
+          <button class="delete btn btn-danger btn-sm mx-2">
+                  <i class="fa-solid fa-xmark"></i>
+          </button>
+      </div>
+    </div>`;
+    workoutsElem.appendChild(workoutElem);
+  }
+
   //Show the output of markup and code to the user in the browser
   _render() {
     this._displayTotalCalories();
@@ -109,9 +151,9 @@ class Meal {
 }
 
 class Workout {
-  constructor(type, calories) {
+  constructor(name, calories) {
     this.id = Math.random().toString(16).slice(2);
-    this.type = type;
+    this.name = name;
     this.calories = calories;
   }
 }
@@ -172,7 +214,7 @@ class App {
       workoutName.value,
       Number(workoutCalorie.value)
     );
-    this._tracker.addMeal(workout);
+    this._tracker.addWorkout(workout);
 
     //Clear the form
     workoutName.value = '';
@@ -184,6 +226,8 @@ class App {
     });
   }
 }
+
+const app = new App();
 
 // const tracker = new CalorieTracker();
 
