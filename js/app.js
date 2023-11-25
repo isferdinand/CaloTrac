@@ -116,12 +116,81 @@ class Workout {
   }
 }
 
-const tracker = new CalorieTracker();
+// Handle Events for adding new meal and workouts from the page
+class App {
+  //instantiate a tracker set it to property in the constructor
+  constructor() {
+    this._tracker = new CalorieTracker();
 
-const dinner = new Meal('Dinner', 300);
-tracker.addMeal(dinner);
-const lunch = new Meal('Lunch', 300);
-tracker.addMeal(lunch);
+    document
+      .getElementById('meal-form')
+      .addEventListener('submit', this._newMeal.bind(this));
 
-const run = new Workout('Running', 500);
-tracker.addWorkout(run);
+    document
+      .getElementById('workout-form')
+      .addEventListener('submit', this._newWorkout.bind(this));
+  }
+
+  _newMeal(e) {
+    e.preventDefault();
+
+    const mealName = document.getElementById('meal-name');
+    const mealCalorie = document.getElementById('meal-calories');
+
+    // Validating inputs
+    if (mealName.value === '' || mealCalorie.value === '') {
+      alert('Please fill in the fields');
+      return;
+    }
+
+    const meal = new Meal(mealName.value, Number(mealCalorie.value));
+    this._tracker.addMeal(meal);
+
+    //Clear the form
+    mealName.value = '';
+    mealCalorie.value = '';
+
+    const collapseMeal = document.getElementById('collapse-meal');
+    const bsCollapse = new bootstrap.Collapse(collapseMeal, {
+      toggle: true,
+    });
+  }
+
+  _newWorkout(e) {
+    e.preventDefault();
+
+    const workoutName = document.getElementById('workout-name');
+    const workoutCalorie = document.getElementById('workout-calories');
+
+    // Validating inputs
+    if (workoutName.value === '' || workoutCalorie.value === '') {
+      alert('Please fill in the fields');
+      return;
+    }
+
+    const workout = new Workout(
+      workoutName.value,
+      Number(workoutCalorie.value)
+    );
+    this._tracker.addMeal(workout);
+
+    //Clear the form
+    workoutName.value = '';
+    workoutCalorie.value = '';
+
+    const collapseWorkout = document.getElementById('collapse-workout');
+    const bsCollapse = new bootstrap.Collapse(collapseWorkout, {
+      toggle: true,
+    });
+  }
+}
+
+// const tracker = new CalorieTracker();
+
+// const dinner = new Meal('Dinner', 300);
+// tracker.addMeal(dinner);
+// const lunch = new Meal('Lunch', 300);
+// tracker.addMeal(lunch);
+
+// const run = new Workout('Running', 500);
+// tracker.addWorkout(run);
